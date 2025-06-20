@@ -196,3 +196,89 @@ if (-not $user) {
     TeamsUpgradePolicy                = $user.TeamsUpgradePolicy
 }
 ```
+# Telephony
+## List all Users enabled for Teams Phone
+```
+Get-CsPhoneNumberAssignment | Where-Object {$_.PstnAssignmentStatus -eq "Assigned"}
+```
+## Assign a phone number to user
+```
+Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting
+```
+### For calling plan users
+```
+Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType CallingPlan
+```
+## Remove a phone number from a user
+```
+Remove-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting
+```
+## Assign an Emergency location
+```
+Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting -EmergencyLocationId "your-location-id"
+```
+## List all Emergency locations
+```
+Get-CsOnlineLisLocation
+```
+## View unassigned phone numbers
+```
+Get-CsPhoneNumber -TelephoneNumberStatus Unassigned
+```
+## List all Voice Routing Policies
+```
+Get-CsOnlineVoiceRoutingPolicy
+```
+## Assign a Voice Routing Policy to a user
+```
+Grant-CsOnlineVoiceRoutingPolicy -Identity "user@domain.com" -PolicyName "UK-DirectRouting"
+```
+## List normalization rules and dial plans
+```
+Get-CsTenantDialPlan
+Get-CsVoiceNormalizationRule
+```
+## Assign a Calling Policy to a user
+```
+Grant-CsTeamsCallingPolicy -Identity "user@domain.com" -PolicyName "InternationalCalling"
+```
+## Export Teams Calling Configuration for all users
+``` powershell
+<#
+.SYNOPSIS
+Exports Teams Phone System calling configuration for all users with a LineURI assigned.
+
+.DESCRIPTION
+Gathers and exports user-level Teams calling settings such as phone number, LineURI, calling policies, dial plans, and emergency location.
+
+.OUTPUT
+Exports to TeamsPhoneUsers.csv in the current directory.
+
+.EXAMPLE
+.\Export-TeamsCallingConfig.ps1
+#>
+
+# Optional: Connect if not already connected
+# Connect-MicrosoftTeams
+
+$users = Get-CsOnlineUser | Where-Object { $_.LineURI -like "tel:*" }
+
+$results = foreach ($user in $users) {
+    [PSCustomObject]@{
+        DisplayName              = $user.DisplayName
+        UserPrincipalName        = $user.UserPrincipalName
+        LineURI                  = $user.LineURI
+        OnPremLineURI            = $user.OnPremLineURI
+        UsageLocation            = $user.UsageLocation
+        TeamsCallingPolicy       = $user.TeamsCallingPolicy
+        OnlineVoiceRoutingPolicy = $user.OnlineVoiceRoutingPolicy
+        TenantDialPlan           = $user.TenantDialPlan
+        EmergencyLocation        = $user.E911Location
+        CallingLineIdentity      = $user.CallingLineIdentity
+        TeamsUpgradePolicy       = $user.TeamsUpgradePolicy
+    }
+}
+
+$results | Export-Csv -Path ".\TeamsPhoneUsers.csv" -NoTypeInformation -Encoding UTF8
+Write-Host "Export complete: TeamsPhoneUsers.csv" -ForegroundColor Green
+```
