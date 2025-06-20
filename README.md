@@ -6,10 +6,10 @@ These scripts are designed to be easy to use, adapt, and automate for day-to-day
 
 ---
 
-## ✅ Requirements
+## Requirements
 
 - Windows PowerShell 5.1+ or PowerShell Core 7+
 - MicrosoftTeams module installed
 
-```powershell
+```Install powershell module
 Install-Module -Name MicrosoftTeams -Force
