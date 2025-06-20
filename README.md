@@ -11,5 +11,9 @@ These scripts are designed to be easy to use, adapt, and automate for day-to-day
 - Windows PowerShell 5.1+ or PowerShell Core 7+
 - MicrosoftTeams module installed
 
-```Install powershell module
+```powershell
 Install-Module -Name MicrosoftTeams -Force
+
+```powershell
+Connect-MicrosoftTeams
+
