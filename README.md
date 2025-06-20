@@ -65,6 +65,92 @@ Get-CsTeamsMessagingPolicy
 ```
 Get-CsTeamsMeetingPolicy
 ```
+## List all Calling Policies
+```
+Get-CsTeamsCallingPolicy
+```
+### List all App Setup Policies
+```
+Get-CsTeamsAppSetupPolicy
+```
+## List all App Permission Policies
+```
+Get-CsTeamsAppPermissionPolicy
+```
+## List all Meeting Broadcast (Live Events) Policies
+```
+Get-CsTeamsMeetingBroadcastPolicy
+```
+## List all Emergency Calling Policies
+```
+Get-CsTeamsEmergencyCallingPolicy
+```
+## List all Emergency Call Routing Policies
+```
+Get-CsTeamsEmergencyCallRoutingPolicy
+```
+## List all Calling Line Identify Policies
+```
+Get-CsCallingLineIdentity
+```
+## List all Teams Upgrade Policies
+```
+Get-CsTeamsUpgradePolicy
+```
+## Export all teams policies and all properties
+```
+<#
+.SYNOPSIS
+Retrieves all Microsoft Teams policies and exports every property to CSV.
+
+.DESCRIPTION
+This script gathers every Teams policy type and exports the full object (all properties) into individual CSV files. 
+Useful for full audits or documentation of tenant configuration.
+
+.PARAMETER ExportPath
+Folder path where CSVs will be saved.
+
+.EXAMPLE
+.\List-AllTeamsPolicies.ps1 -ExportPath "C:\TeamsPolicies\"
+#>
+
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$ExportPath
+)
+
+function Export-IfPath {
+    param (
+        [string]$Name,
+        [object]$Data
+    )
+    if ($ExportPath) {
+        $fullPath = Join-Path -Path $ExportPath -ChildPath "$Name.csv"
+        $Data | Export-Csv -Path $fullPath -NoTypeInformation
+        Write-Host "Exported $Name to $fullPath" -ForegroundColor Green
+    }
+}
+
+# Create folder if it doesn't exist
+if (-not (Test-Path $ExportPath)) {
+    New-Item -Path $ExportPath -ItemType Directory | Out-Null
+}
+
+# --- Export all policy types ---
+
+Export-IfPath -Name "MessagingPolicies"             -Data (Get-CsTeamsMessagingPolicy)
+Export-IfPath -Name "MeetingPolicies"               -Data (Get-CsTeamsMeetingPolicy)
+Export-IfPath -Name "CallingPolicies"               -Data (Get-CsTeamsCallingPolicy)
+Export-IfPath -Name "AppSetupPolicies"              -Data (Get-CsTeamsAppSetupPolicy)
+Export-IfPath -Name "AppPermissionPolicies"         -Data (Get-CsTeamsAppPermissionPolicy)
+Export-IfPath -Name "MeetingBroadcastPolicies"      -Data (Get-CsTeamsMeetingBroadcastPolicy)
+Export-IfPath -Name "EmergencyCallingPolicies"      -Data (Get-CsTeamsEmergencyCallingPolicy)
+Export-IfPath -Name "EmergencyRoutingPolicies"      -Data (Get-CsTeamsEmergencyCallRoutingPolicy)
+Export-IfPath -Name "CallingLineIdentityPolicies"   -Data (Get-CsCallingLineIdentity)
+Export-IfPath -Name "UpgradePolicies"               -Data (Get-CsTeamsUpgradePolicy)
+```
+
+
 
 ## List all policies assigned to a user
 ```
