@@ -10,26 +10,26 @@ These scripts are designed to be easy to use, adapt, and automate for day-to-day
 - Windows PowerShell 5.1+ or PowerShell Core 7+
 - MicrosoftTeams module installed
 ## Install powershell module
-```
+``` powershell
 Install-Module -Name MicrosoftTeams -Force
 ```
 ## Connect to Microsoft Teams
-```
+``` powershell
 Connect-MicrosoftTeams
 ```
 ## List all Teams
-```
+``` powershell
 Get-Team | Select DisplayName, GroupId, Visibility
 ```
 ## List All Users in a Specific Team
-```
+``` powershell
 # Replace with your Team's GroupId
 $groupId = "<your-group-id>"
 
 Get-TeamUser -GroupId $groupId | Select User, Role
 ```
 ## List All Teams with Owners
-```
+``` powershell
 $teams = Get-Team
 foreach ($team in $teams) {
     Write-Host "Team: $($team.DisplayName)"
@@ -38,7 +38,7 @@ foreach ($team in $teams) {
 }
 ```
 ## Remove a user from all teams
-```
+``` powershell
 # Replace with the target user's UPN
 $user = "user@domain.com"
 
@@ -52,53 +52,53 @@ foreach ($team in $teams) {
 }
 ```
 ## Add a User to a Team
-```
+``` powershell
 # Replace with Team GroupId and user UPN
 Add-TeamUser -GroupId "<group-id>" -User "user@domain.com"
 ```
 # Microsoft Teams Policies
 ## List all messaging policies
-```
+``` powershell
 Get-CsTeamsMessagingPolicy
 ```
 ## List all meeting policies
-```
+``` powershell
 Get-CsTeamsMeetingPolicy
 ```
 ## List all Calling Policies
-```
+``` powershell
 Get-CsTeamsCallingPolicy
 ```
 ### List all App Setup Policies
-```
+``` powershell
 Get-CsTeamsAppSetupPolicy
 ```
 ## List all App Permission Policies
-```
+``` powershell
 Get-CsTeamsAppPermissionPolicy
 ```
 ## List all Meeting Broadcast (Live Events) Policies
-```
+``` powershell
 Get-CsTeamsMeetingBroadcastPolicy
 ```
 ## List all Emergency Calling Policies
-```
+``` powershell
 Get-CsTeamsEmergencyCallingPolicy
 ```
 ## List all Emergency Call Routing Policies
-```
+``` powershell
 Get-CsTeamsEmergencyCallRoutingPolicy
 ```
 ## List all Calling Line Identify Policies
-```
+``` powershell
 Get-CsCallingLineIdentity
 ```
 ## List all Teams Upgrade Policies
-```
+``` powershell
 Get-CsTeamsUpgradePolicy
 ```
 ## Export all teams policies and all properties
-```
+``` powershell
 <#
 .SYNOPSIS
 Retrieves all Microsoft Teams policies and exports every property to CSV.
@@ -153,7 +153,7 @@ Export-IfPath -Name "UpgradePolicies"               -Data (Get-CsTeamsUpgradePol
 
 
 ## List all policies assigned to a user
-```
+``` powershell
 <#
 .SYNOPSIS
 Retrieves all Teams-related policies assigned to a specific user.
@@ -198,48 +198,48 @@ if (-not $user) {
 ```
 # Telephony
 ## List all Users enabled for Teams Phone
-```
+``` powershell
 Get-CsPhoneNumberAssignment | Where-Object {$_.PstnAssignmentStatus -eq "Assigned"}
 ```
 ## Assign a phone number to user
-```
+``` powershell
 Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting
 ```
 ### For calling plan users
-```
+``` powershell
 Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType CallingPlan
 ```
 ## Remove a phone number from a user
-```
+``` powershell
 Remove-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting
 ```
 ## Assign an Emergency location
-```
+``` powershell
 Set-CsPhoneNumberAssignment -Identity "user@domain.com" -PhoneNumber "+441234567890" -PhoneNumberType DirectRouting -EmergencyLocationId "your-location-id"
 ```
 ## List all Emergency locations
-```
+``` powershell
 Get-CsOnlineLisLocation
 ```
 ## View unassigned phone numbers
-```
+``` powershell
 Get-CsPhoneNumber -TelephoneNumberStatus Unassigned
 ```
 ## List all Voice Routing Policies
-```
+``` powershell
 Get-CsOnlineVoiceRoutingPolicy
 ```
 ## Assign a Voice Routing Policy to a user
-```
+``` powershell
 Grant-CsOnlineVoiceRoutingPolicy -Identity "user@domain.com" -PolicyName "UK-DirectRouting"
 ```
 ## List normalization rules and dial plans
-```
+``` powershell
 Get-CsTenantDialPlan
 Get-CsVoiceNormalizationRule
 ```
 ## Assign a Calling Policy to a user
-```
+``` powershell
 Grant-CsTeamsCallingPolicy -Identity "user@domain.com" -PolicyName "InternationalCalling"
 ```
 ## Export Teams Calling Configuration for all users
