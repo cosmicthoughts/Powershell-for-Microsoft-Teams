@@ -9,11 +9,11 @@ These scripts are designed to be easy to use, adapt, and automate for day-to-day
 ## Requirements
 - Windows PowerShell 5.1+ or PowerShell Core 7+
 - MicrosoftTeams module installed
-## powershell module
+## Install powershell module
 ```
 Install-Module -Name MicrosoftTeams -Force
 ```
-## connect to Microsoft Teams
+## Connect to Microsoft Teams
 ```
 Connect-MicrosoftTeams
 ```
@@ -57,3 +57,56 @@ foreach ($team in $teams) {
 Add-TeamUser -GroupId "<group-id>" -User "user@domain.com"
 ```
 # Microsoft Teams Policies
+## List all messaging policies
+```
+Get-CsTeamsMessagingPolicy
+```
+## List all meeting policies
+```
+Get-CsTeamsMeetingPolicy
+```
+
+## List all policies assigned to a user
+```
+<#
+.SYNOPSIS
+Retrieves all Teams-related policies assigned to a specific user.
+
+.DESCRIPTION
+This script queries the full set of Teams policies assigned to a given user account, using Get-CsOnlineUser. 
+Useful for auditing or troubleshooting permission and feature access in Microsoft Teams.
+
+.PARAMETER UserPrincipalName
+The UPN (email) of the user whose policy assignments you want to view.
+
+.EXAMPLE
+.\Get-TeamsUserPolicies.ps1 -UserPrincipalName "user@domain.com"
+#>
+
+param (
+    [Parameter(Mandatory = $true)]
+    [string]$UserPrincipalName
+)
+
+$user = Get-CsOnlineUser -Identity $UserPrincipalName
+
+if (-not $user) {
+    Write-Error "User not found: $UserPrincipalName"
+    exit
+}
+
+[PSCustomObject]@{
+    DisplayName                       = $user.DisplayName
+    UserPrincipalName                 = $user.UserPrincipalName
+    TeamsMessagingPolicy              = $user.TeamsMessagingPolicy
+    TeamsMeetingPolicy                = $user.TeamsMeetingPolicy
+    TeamsCallingPolicy                = $user.TeamsCallingPolicy
+    TeamsAppSetupPolicy               = $user.TeamsAppSetupPolicy
+    TeamsAppPermissionPolicy          = $user.TeamsAppPermissionPolicy
+    TeamsMeetingBroadcastPolicy       = $user.TeamsMeetingBroadcastPolicy
+    TeamsEmergencyCallingPolicy       = $user.TeamsEmergencyCallingPolicy
+    TeamsEmergencyCallRoutingPolicy   = $user.TeamsEmergencyCallRoutingPolicy
+    CallingLineIdentityPolicy         = $user.CallingLineIdentityPolicy
+    TeamsUpgradePolicy                = $user.TeamsUpgradePolicy
+}
+```
